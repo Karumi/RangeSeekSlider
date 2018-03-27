@@ -137,6 +137,9 @@ import UIKit
     /// Set slider line tint color between handles
     @IBInspectable open var colorBetweenHandles: UIColor?
 
+    /// Set slider line tint color for last range.
+    @IBInspectable open var colorLastRange: UIColor?
+
     /// The color of the entire slider when the handle is set to the minimum value and the maximum value. Default is nil.
     @IBInspectable open var initialColor: UIColor?
 
@@ -229,6 +232,7 @@ import UIKit
 
     private let sliderLine: CALayer = CALayer()
     private let sliderLineBetweenHandles: CALayer = CALayer()
+    private let sliderLineLastRange: CALayer = CALayer()
 
     private let leftHandle: CALayer = CALayer()
     private let rightHandle: CALayer = CALayer()
@@ -396,6 +400,8 @@ import UIKit
         // draw the track distline
         layer.addSublayer(sliderLineBetweenHandles)
 
+        layer.addSublayer(sliderLineLastRange)
+
         // draw the minimum slider handle
         leftHandle.cornerRadius = handleDiameter / 2.0
         leftHandle.borderWidth = handleBorderWidth
@@ -470,6 +476,7 @@ import UIKit
                                   height: lineHeight)
         sliderLine.cornerRadius = lineHeight / 2.0
         sliderLineBetweenHandles.cornerRadius = sliderLine.cornerRadius
+        sliderLineLastRange.cornerRadius = sliderLine.cornerRadius
     }
 
     private func updateLabelValues() {
@@ -502,6 +509,7 @@ import UIKit
         if let initialColor = initialColor?.cgColor, isInitial {
             minLabel.foregroundColor = initialColor
             maxLabel.foregroundColor = initialColor
+            sliderLineLastRange.backgroundColor = initialColor
             sliderLineBetweenHandles.backgroundColor = initialColor
             sliderLine.backgroundColor = initialColor
 
@@ -514,6 +522,7 @@ import UIKit
             let tintCGColor: CGColor = tintColor.cgColor
             minLabel.foregroundColor = minLabelColor?.cgColor ?? tintCGColor
             maxLabel.foregroundColor = maxLabelColor?.cgColor ?? tintCGColor
+            sliderLineLastRange.backgroundColor = colorLastRange?.cgColor ?? tintCGColor
             sliderLineBetweenHandles.backgroundColor = colorBetweenHandles?.cgColor ?? tintCGColor
             sliderLine.backgroundColor = tintCGColor
 
@@ -546,6 +555,11 @@ import UIKit
                                                 y: sliderLine.frame.minY,
                                                 width: rightHandle.position.x - leftHandle.position.x,
                                                 height: lineHeight)
+
+        sliderLineLastRange.frame = CGRect(x: rightHandle.position.x,
+                                           y: sliderLine.frame.minY,
+                                           width: sliderLine.frame.maxX - rightHandle.position.x,
+                                           height: lineHeight)
     }
 
     private func updateLabelPositions() {
